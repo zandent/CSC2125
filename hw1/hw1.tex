@@ -15,18 +15,18 @@
 \section{Longest chain rule}
 \renewcommand{\thesubsection}{(\alph{subsection})}
 \subsection{What happen if the assumption is violated?}
-If the speed of block propagation is not fast enough, the latest chain information arrives some nodes much earlier than other nodes. They start to assemble next block but others don't. After a period of time, other nodes acquire the chain information which was already out of date. Then they will create another branches of the chain. If a group of attacker nodes syncs much faster than other nodes, they can assemble illegal blocks leading the chain as long as they are in consensus with each other. It breaks proof-of-work. Therefore, the blockchain never reaches consensus. It never forms the longest chain.
+If the speed of block propagation is not fast enough, the latest chain information arrives some nodes much earlier than other nodes. They start to assemble next block but others don't. After a period of time, other nodes acquire the out-of-date chain. Then they will create another branches of the chain. If a group of attacker nodes syncs much faster than other nodes, they can assemble illegal blocks leading the chain as long as they are in consensus with each other. It breaks proof-of-work. Therefore, the blockchain never reaches consensus. It never forms the longest chain.
 \subsection{Other assumptions}
-First is the hash rate of honest nodes is larger than attacker nodes. Attacker controls majority of hash rate will take up the longest chain, It can assemble any illegal blocks without checking double spending and other necessary verifications.\\\\
-Second is that none of a single node or organization owns over 51\% of the hash rate. Similar with the first assumption, with over 51\% of hash rate, it can control the longest chain and control the whole trading market.\\\\
-Third is that everyone agrees with POW consensus protocol. Obviously, hash rate should be regarded as the only proof of a valid block on the chain. In this way, the chain can be continuously extended to the longest one by everyone's mining.
+First is the hash rate of honest nodes is larger than attacker nodes. Attacker controlling majority of hash rate will take up the longest chain, It can assemble any illegal blocks without checking double spending and other necessary verifications.\\\\
+Second is that none of a single node or organization owns over 51\% of the hash rate. Similar with the first assumption, with over 51\% of hash rate, it can control the longest chain and control the whole trading market in order to overwrite transactions.\\\\
+Third is that everyone agrees with POW consensus protocol. Obviously, computation power should be regarded as the only proof of a valid block on the chain. In this way, each honest miner will believe that it is hard for attackers to do 51\% attack under POW. Then the legal chain can be continuously extended to the longest one by everyone's mining.
 \section{What goes wrong without POW}
-First, double spending might occur. If all transactions committed are regarded as valid, no one is willing to verify each transaction and double spending will occur.\\\\
-Second, it is much cheap to commit transactions. The chain is easier to produce a large number of branches. The longest chain is easily replaced by its branches. Then the transactions will be reverted.\\\\
-Third, it leads to devaluation of the block rewards because of the low cost of committing transactions.
+Double spending might occur. Since miners don't need to use power to solve hash header puzzle, it is much cheap to commit transactions. The chain is easier to produce a large number of forks. The longest chain is easily replaced by its forks. Then the transactions will be reverted.\\\\
+Besides, it leads to devaluation of the block rewards because of the low cost of committing transactions. Eventually, no miner wants to commit transactions to the chain if the mining reward cannot cover power cost any more.
 %Even if setting voting for main chain, sybil attack might occur. Without POW, the cost of committing transactions to chain is much cheaper. Then the attackers is able to clone a large number of fake IP identities to vote.
 \section{Transaction \& block broadcasting method}
-Bitcoin is peer-to-peer network. Let say account A claim a transaction. There are several nodes near A. A will send it to the surrounding nodes. These nodes will broadcast the information to their surrounding nodes. Eventually, all of the nodes acquire the transaction information. So is block committing.
+Bitcoin is peer-to-peer network. Each node connects maximum 32 peers. The peers are randomly chosen. Let say account A claim a transaction. A will send it to the surrounding nodes. These nodes will broadcast the information to their surrounding nodes. Eventually, all of the nodes acquire the transaction information. So is block committing.\\\\
+If a new node B wants to join bitcoin network, first B should knows one of the nodes address, then the node will send a list of known nodes to B, finally some of them connect B as B's peers.
 \section{\# of blocks to wait}
 Following bitcoin whitepaper, I implemented a c program as follows:
 \begin{verbatim}
@@ -58,7 +58,9 @@ Following bitcoin whitepaper, I implemented a c program as follows:
         return 0;
     }
 \end{verbatim}
-\subsection{0.2 computation power, under 0.001 double-spending risk}
+The c program will print the risk of double spending under different waiting block and attack computation power. \verb|Q| represents attack computation power. \verb|z| is the number of blocks which attackers should catch up.
+\subsection{0.2 attack computation power, under 0.001 double-spending risk}
+I set \verb|Q| as 0.2 representing attack computation power. \verb|z| is from 0 to 20.
 The output from \verb|z = 0| to \verb|20| is as follows:\\
 \begin{verbatim}
     z = 0, double-spending risk = 1.000000
@@ -84,7 +86,8 @@ The output from \verb|z = 0| to \verb|20| is as follows:\\
     z = 20, double-spending risk = 0.000002
 \end{verbatim}
 It is found that the risk is lower than 0.001 after 11 blocks. So recipient needs to wait at least 11 blocks.
-\subsection{0.3 computation power, under 0.0001 double-spending risk}
+\subsection{0.3 attack computation power, under 0.0001 double-spending risk}
+I set \verb|Q| as 0.3 representing attack computation power. \verb|z| is from 0 to 40.
 The output from \verb|z = 20| to \verb|40| is as follows:\\
 \begin{verbatim}
     z = 20, double-spending risk = 0.002480
