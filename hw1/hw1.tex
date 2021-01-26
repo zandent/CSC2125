@@ -15,18 +15,18 @@
 \section{Longest chain rule}
 \renewcommand{\thesubsection}{(\alph{subsection})}
 \subsection{What happen if the assumption is violated?}
-If the speed of block propagation is not fast enough, the latest chain information arrives some nodes much earlier than other nodes. They start to assemble next block but others don't. After a period of time, other nodes acquire the out-of-date chain. Then they will create another branches of the chain. If a group of attacker nodes syncs much faster than other nodes, they can assemble illegal blocks leading the chain as long as they are in consensus with each other. It breaks proof-of-work. Therefore, the blockchain never reaches consensus. It never forms the longest chain.
+If the speed of block propagation is not fast enough, the latest chain information arrives some nodes much earlier than other nodes. They start to assemble next block but others don't. After a period of time, other nodes acquire the out-of-date chain. Then they will create other branches of the chain. If a group of attacker nodes syncs much faster than other nodes, they can assemble illegal blocks leading the chain as long as they are in consensus with each other. It breaks proof-of-work. Therefore, the blockchain never reaches consensus. It never forms the longest chain.
 \subsection{Other assumptions}
 First is the hash rate of honest nodes is larger than attacker nodes. Attacker controlling majority of hash rate will take up the longest chain, It can assemble any illegal blocks without checking double spending and other necessary verifications.\\\\
 Second is that none of a single node or organization owns over 51\% of the hash rate. Similar with the first assumption, with over 51\% of hash rate, it can control the longest chain and control the whole trading market in order to overwrite transactions.\\\\
 Third is that everyone agrees with POW consensus protocol. Obviously, computation power should be regarded as the only proof of a valid block on the chain. In this way, each honest miner will believe that it is hard for attackers to do 51\% attack under POW. Then the legal chain can be continuously extended to the longest one by everyone's mining.
 \section{What goes wrong without POW}
-Double spending might occur. Since miners don't need to use power to solve hash header puzzle, it is much cheap to commit transactions. The chain is easier to produce a large number of forks. The longest chain is easily replaced by its forks. Then the transactions will be reverted.\\\\
+Double spending might occur. Since miners don't need to use computation power to solve hash header puzzle, it is much cheap to commit transactions. The chain is easier to produce a large number of forks. The longest chain is easily replaced by its forks. Then the transactions will be reverted.\\\\
 Besides, it leads to devaluation of the block rewards because of the low cost of committing transactions. Eventually, no miner wants to commit transactions to the chain if the mining reward cannot cover power cost any more.
 %Even if setting voting for main chain, sybil attack might occur. Without POW, the cost of committing transactions to chain is much cheaper. Then the attackers is able to clone a large number of fake IP identities to vote.
 \section{Transaction \& block broadcasting method}
-Bitcoin is peer-to-peer network. Each node connects maximum 32 peers. The peers are randomly chosen. Let say account A claim a transaction. A will send it to the surrounding nodes. These nodes will broadcast the information to their surrounding nodes. Eventually, all of the nodes acquire the transaction information. So is block committing.\\\\
-If a new node B wants to join bitcoin network, first B should knows one of the nodes address, then the node will send a list of known nodes to B, finally some of them connect B as B's peers.
+Bitcoin is peer-to-peer network. Each node connects maximum 32 peers. The peers are randomly chosen. Let's say account A claims a transaction. A will send it to the surrounding nodes. These nodes will broadcast the information to their surrounding nodes. Eventually, all of the nodes acquire the transaction information. So is block propagation.\\\\
+If a new node B wants to join bitcoin network, first B should know one of the nodes address, then the node will send a list of known nodes to B, finally some of them connect B as B's peers.
 \section{\# of blocks to wait}
 Following bitcoin whitepaper, I implemented a c program as follows:
 \begin{verbatim}
