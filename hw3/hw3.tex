@@ -15,6 +15,7 @@
 \begin{document}
 \maketitle
 \renewcommand{\thesubsection}{(\alph{subsection})}
+\section*{Part1}
 \section{Suppose we run PBFT algorithm on a cluster of 21 machines. What is the
 maximum number of machines we will be able to tolerant for failure
 simultaneously?}
@@ -36,5 +37,81 @@ Therefore, node A cannot decide the message he received is correct or not.
 \section{PBFT relies on the primary node to send out pre-prepare messages to drive the
 consensus process. What would happen if the primary node is malicious or fails?
 How does PBFT handle this situation?}
-
+First, even if the primary node is malicious or fails, the whole system can still keep in consensus.
+%The reason is that if the primary node is malicious, the number of faulty backups is $f-1$.
+%Let's say the pre-prepare messages A and B are sent to different backups by the faulty primary.
+%If A is the one which the client wants, at least $f+1$ nodes keep in consensus for A. So is B.
+The reason is that even if the primary node is malicious 
+and sends different pre-prepare messages to each backup,
+each replica will receive recursive feedbacks from each other during prepare and commit stages,
+then some of replicas will notice the unusual action by primary. Next view-change is triggered and new primary node is selected.\\\\
+There are 4 situations triggering view change:
+\begin{itemize}
+    \item Primary node timeouts for sending message.
+    \item Primary node send different message for each backup.
+    \item Primary node never send pre-prepare message for client. Then client will broadcast messages to all replicas if the reply timeouts.
+    \item Primary node overwrites messages. Other replicas will verify the message and trigger view-change.
+\end{itemize}
+A new primary $p^\prime = (v+1)mod|R|$ will take effect if at least $2f+1$ replicas trigger view-change. 
+Then the primary sends new view messages to each backup.
+\section{Could PBFT skip the commit messages? Suppose nodes in PBFT commit-local
+directly after receiving 2f + 1 prepare messages. What could go wrong? Please
+explain with a counter example (Consider the case where a view change happens
+immediately after one or two nodes commit-locally for a request).}
+No. PBFT cannot skip commit. If view change happens right after node A committed locally,
+node A cannot prove over $2f$ replicas receive the true messages and cannot keep in consensus.
+Then the log which node A stored locally is not valid and in consensus.
+Therefore, during view change stage, node A cannot recover the request which has reached before new primary is selected.
+\section{A permissioned blockchain is a blockchain system in which the membership of the
+blockchain is fixed and known to all participants. The membership may be
+managed offline by a potentially centralized organization. Explain how PBFT could
+be used to implement such a permissioned blockchain.}
+Implementation:
+\begin{itemize}
+    \item Block proposal: some node claims a new block proposal and send pre-prepare message.
+    \item Pre-prepare: validators receive pre-prepare messages and broadcast prepare message.
+    \item Prepare: Upon receiving $2f+1$ prepares, validators send commit messages.
+    \item Commit: Upon receiving $2f+1$ commits, validators insert new block into blockchain.
+    \item Proposer change: Send proposer-change message. Upon receiving $2f+1$ messages, change a new proposer to claim new block.
+\end{itemize}
+Why only applying on permissioned blockchain?
+First, the recursive communication among replicas increases the time complexity. Such $O(n^2)$ algorithm cannot be applied on large-scale public chain.\\
+Second, the number of faulty nodes are easily estimated by centralized organization and the PBFT algorithm safety and liveness on blockchain will be evaluated.\\
+\section{Suppose the number of replicas in the system is N. During the normal-case
+operation in PBFT, roughly how many messages will be broadcasted for each
+request? Suppose the broadcast is implemented via point to point transmission
+between nodes one by one. What is the total number of transmitted messages for
+processing each request? (Answer in Big O notation like O(1), O(N), $O(N^2)$, …)}
+$O(N^2)$. Because each node should broadcast messages to other $N-1$ nodes. There are $N*(N-1)$ communications in total. So it is $O(N^2)$.
+\section{Suppose the number of replicas in the system is N. Suppose the broadcast is
+implemented via point to point transmission between nodes one by one. What is
+the total number of transmitted messages during a view-change in PBFT? What is
+the size of each message during a view-change? (Answer in Bit O notations like
+O(1), O(N), $O(N^2)$, …)}
+Time complexity is $O(N^2)$ and the size of a single message is $O(N)$. 
+Because during view-change, 
+some nodes which notice unusual actions of primary broadcast view-change messages, 
+which is $O(N^2)$. Then the new primary receives view-change messages and collect them, 
+then broadcasts new-view messages, which is $O(N)$. 
+Therefore, time complexity is $O(N^2)$.\\\\
+The view-change message is $<VIEWCHANGE, v+1, n, C, P, i>$. 
+The size of view-change message consists of message title ($O(1)$), 
+view number ($O(1))$, 
+stable checkpoint ID ($O(1)$),
+a set of $2f+1$ checkpoint messages ($O(N)$), 
+a set of the requests' pre-prepare and $2f$ prepare messages and a sequence number ($O(N)$).
+Therefore the size is $O(N)$.
+\section{Given the above analysis, explain why it might be impractical to use PBFT to
+implement a large scale blockchain.}
+\begin{itemize}
+    \item First, the time complexity is $O(N^2)$, 
+    which lags two much during the communication under large scale blockchain. It is too inefficient.
+    \item Second, current POW consensus protocol fault tolerance is 50\% but PBFT is 33.3\%. 
+    It means, under PBFT, it is easier to be attacked when the number of faulty nodes over 33.3\%.
+    \item Third, PBFT needs primary to control message communications. The degree of decentralization is lower than POW.
+    \item The logs of transactions will be deleted after committing. It is easier for attackers to overwrite transaction history.
+\end{itemize}
+\section*{Part2}
+\section{Why withholding a mined block can enable the attacker to gain more rewards?
+Note that the attacker still expects to generate the same number of blocks.}
 \end{document}
