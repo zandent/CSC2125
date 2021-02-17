@@ -4,6 +4,11 @@
 \usepackage{makecell}
 \usepackage[a4paper, total={6in, 9in}]{geometry}
 \usepackage{authblk}
+%% table
+\usepackage[flushleft]{threeparttable}
+\usepackage{multirow}
+\usepackage{makecell}
+
 \usepackage{graphicx}
 \graphicspath{{./figures/}}
 \usepackage{sectsty}
@@ -114,4 +119,73 @@ implement a large scale blockchain.}
 \section*{Part2}
 \section{Why withholding a mined block can enable the attacker to gain more rewards?
 Note that the attacker still expects to generate the same number of blocks.}
+After hiding a block, if the same hashrate as other miners, 
+the attacker always leads at least one block compared with the current public longest chain.
+Once he published the blocks he generated, his fork becomes the longest one. 
+Therefore, besides the hiding block rewards, 
+he also gains more rewards for the hiding following fork.
+\section{In the selfish mining strategy, if the attacker always loses the propagation battle,
+how much computation power does he need for the attack to be profitable?
+Why?}
+More than $\frac{1}{3}$ of the total computation power in the network.\\
+Reason: Based on the paper "Majority is not Enough:
+Bitcoin Mining is Vulnerable" from the homework handout, 
+it is concluded that the relationship 
+between selfish miner power threshold and propagation factor
+as the following figure.
+When $\gamma=0$, which means that honest miners always win the propagation battle
+against selfish miners and publish their block onto the chain,
+selfish miners will still earn revenues as long as the miner power is over $\frac{1}{3}$.
+As shown in the second figure below, 
+there is a relationship between miner revenue and miner size.
+It is found that when the miner power reaches over $\frac{1}{3}$, 
+the selfish branch has higher and enough probability to let other miners mine block
+on his chain. Then the selfish blockchain is not easy to discard by miners 
+and to become the longest chain.
+Therefore the selfish miners always gain more revenues from mining than honest miners.
+\\\includegraphics[width=130mm,scale=1]{tr.png}\\
+\\\includegraphics[width=130mm,scale=1]{mr.png}\\
+\section{Consider the fact that most miners now join mining pools to mine
+cryptocurrencies, what’s the economic consequence of the selfish mining
+vulnerability?}
+First, the longer the hidden selfish chain exist, the larger the computation power wasted.
+New honest miners never gain revenues while their electricity cost increases from the beginning of mining.\\
+Second, the significant revenue due to selfish mining attracts new selfish miners to join.
+More selfish miners' joining causes the pure hashrate of longest chain to decrease 
+even though more mining power joined. 
+The value of cryptocurrencies will depreciate due to low hashrate of transaction completion.
+\section{Search the web to survey the mining pool distributions of top cryptocurrencies:
+BTC, ETH, LTC, XMR, and ZEC. How many of them are vulnerable to selfish mining
+attacks?}
+From the paper "On the Profitability of Selfish Mining Against
+Multiple Difficulty Adjustment Algorithms",
+All of them are more or less possible to fall into selfish mining attack.
+But the possibility of profitability by selfish mining varies.
+\begin{table}[h]
+    \small
+    \begin{threeparttable}
+        \begin{tabular}{|p{4cm}|p{10cm}|}
+        \hline
+        \textbf{File} &	\textbf{Description} \\
+        \hline
+        BTC \& ETH \& LTC & Lower risk than described in 
+        the literature due to  the lengthy period leading up to the difficulty
+        adjustment.\\
+        \hline
+        XMR & Resistant to selfish mining due to miners' taking longer time 
+        on difficulty adjustment
+        for each block.\\
+        \hline
+        ZEC & The higher "MedianTimePast" provides 
+        strong protection against selfish mining\\
+        \hline
+        \end{tabular}
+    \end{threeparttable}
+    \caption{Selfish mining risk}
+    \label{table:smr}
+\end{table}
+\section{Describe the rationale of the block withholding attack. Why this can be a strategy
+for a large mining pool to attack small mining pools.}
+\section{In reality, selfish mining does not happen very often but the block withholding
+attack happens a lot. What’s the reasons behind this?}
 \end{document}
