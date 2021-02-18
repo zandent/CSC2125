@@ -186,6 +186,24 @@ But the possibility of profitability by selfish mining varies.
 \end{table}
 \section{Describe the rationale of the block withholding attack. Why this can be a strategy
 for a large mining pool to attack small mining pools.}
+In one pool, a selfish miner contributes partially POW or even none to mining block. 
+Or he postpones committing blocks he found. 
+Then he claims his mining capacity to the pool.
+His mining capacity is used to estimate the amount of the revenues he will earn.
+After some period, he commits his own chain to acquire most of mining rewards.
+It means all of other miners in the same pool consume more electricity usage 
+but get less revenue than normal.
+Both methods will cause the decrease of the mining revenues on all of the miners in the pool.\\\\
+How does large pool attack a small one?\\
+Large pool means it owns large computation power. Without mining any blocks, 
+the large pool claims some of his mining power into the small pool.
+Each miner will lose some rewards 
+which are equal to the divided power potion of the small pool's power.
+As a result, unbalanced relationship between cost and revenues leads the small pool to break up.
 \section{In reality, selfish mining does not happen very often but the block withholding
 attack happens a lot. What’s the reasons behind this?}
+Individual mining power cannot reach over $\frac{1}{3}$ in a mining pool.
+Block withholding is a group attack which is easier to operate and succeed.
+Also, block withdrawing is capable of even not using power to mine 
+and only claiming his mining power to prejudice the interests of other miners.
 \end{document}
