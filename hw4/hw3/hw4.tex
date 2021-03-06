@@ -1,0 +1,119 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{makecell}
+\usepackage[a4paper, total={6in, 9in}]{geometry}
+\usepackage{authblk}
+%% table
+\usepackage[flushleft]{threeparttable}
+\usepackage{multirow}
+\usepackage{makecell}
+
+\usepackage{graphicx}
+\graphicspath{{./figures/}}
+\usepackage{sectsty}
+\sectionfont{\fontsize{11}{15}\selectfont}
+\author{Zi Han Zhao}
+\affil{1001103708}
+\date{}
+\title{CSC2125 Homework 4}
+\begin{document}
+\maketitle
+\renewcommand{\thesubsection}{(\alph{subsection})}
+\section*{Part1}
+\section{Now suppose a blockchain using the Bitcoin protocol runs at a very fast block
+generation rate, so that only 40\% of the generated blocks are on the main chain
+on average when the blockchain runs normally without attackers. Now there is an
+attacker controlling 33\% of the total network hash rate. Is it possible for this
+attacker to deterministically launch double-spending attacks? Why?}
+It is possible. 
+There will be a lot of forks aside with the main chain due to high block generation rate.
+The attacker can starting mining at a already-existing long fork aside
+the main chain. Since 40\% main power is very
+closed to his hash rate (30\%), it is possible for
+him to be lucky to form a longer chain than the current main chain over one block.
+\section{For the previous question, if the chain uses GHOST protocol instead. All the rest
+conditions stay the same. Is it possible for the attacker to deterministically launch
+double-spending attacks? Why?}
+It is hard to do double-spending attack but it still could happen at low possibility.\\\\
+Because under GHOST protocol, the rule of selecting main chain is the chain who 
+owns the heaviest subtree, i.e., the most number of blocks. If a attacker starts to mine his 
+chain aside with the main chain, he cannot generate the same number of forks as the main chain
+since fast block generation makes the number of forks of the main chain very large.\\\\
+However, if the attacker is lucky enough to generate more blocks or 
+subtrees starting one fork with 30\% power,
+it is still possible to become main chain.
+\section{One claims that by using GHOST protocol, we can now simply lower the difficulty
+to speed up the block generation to achieve arbitrarily high transaction
+throughput, because fast block generation no longer harms the security. Is this
+claim true or not? Why?}
+False. By lowering the difficulty, the block creation is accelerated. Then it causes more
+and more forks are created. It will not help to extend the main chain. 
+In contrast, it helps attacker to create the block faster and save more cost to do double-spending without more loss of efficiency.
+\section{Why in GHAST protocol, sometimes we assign same weights to all blocks, but
+sometimes we assign different weights to different blocks? }
+In normal operations of mining which means the block has a safe past sub-graph, 
+all of blocks are assigned as weight 1.
+However, if liveness attack or some other attack trying to create a large subtree is detected,
+the new-generated block will be assigned weight h (the current difficulty of mining) or 0 otherwise. 
+The reason for setting adaptive weight is that under the attack detection, it is equivalent 
+to increasing the difficulty h times. Therefore, when mining block under attack detection,
+the speed of block generation will decrease, which is very useful 
+for miners to recognize the subtree size and then
+to solve the liveness attack during the slow period.
+\section{In Conflux, is it possible for an attacker to create a malicious block choosing a very
+early block as its parent block to disrupt the transaction total order? Why?}
+No. Although his parent is a very early block, the epoch the new block stays is the new one.
+The block order algorithm sorts the blocks based on the corresponding epochs. Therefore,
+it is impossible to disrupt the transaction total order.
+\section{How much hash power an attacker must control for him/her to deterministically
+launch double spending attacks in Conflux? Why?}
+It is almost impossible to do double-spending attack in Conflux. If have to say, it is definitely 51\% of all of the mining power in Conflux network. 
+Because if attacker wants to revert transaction block in some epoch,
+he must compete all other honest miners. He must create a large subtree whose total
+weight or size is greater than all of the honest subtrees under pivot chain blocks.
+Therefore, he should own 51\% power to beat 49\% honest miners' power.
+\section*{Part2}
+\section{Is it possible that the Algorand sortition algorithm selects a committee that
+contains a majority of malicious nodes? If so, is this going to be a problem?}
+Yes. Randomly it is possible to select malicious nodes as majority.\\\\
+But it will not cause big problem. Because the malicious nodes will trick the users
+into initializing BA* with different blocks.
+But the users will become in consensus on an empty block. 
+The empty block will guarantee that no real transactions are confirmed.
+\section{The random seed of the sortition algorithm is critical for the security of the
+Algorand. Suppose an attacker now can control the starting seed of the Algorand
+sortition algorithm. Explain an attack strategy for the attacker to subvert the
+Algorand blockchain.}
+The attacker can control the seed to increase \text{j} in \text{Sortition} function.
+\text{j} is the times he is chosen for blocking miners or committee member.
+It will increase the probability of being chosen.
+In this way, he can do Sybil attack with a majority of malicious nodes, which causes
+empty block generation all the time.
+\section{In Algorithm 8, why the algorithm only considers the consensus “final” when it
+reaches the consensus at the very first step (step == 1)?}
+\text{Reduction} function converts
+the problem of reaching consensus on an arbitrary value
+to reaching consensus on the proposed block, or empty block. 
+At the point, all of the users will become in consensus on two final values.
+Algorithm 8 is responsible of only forming consensus for the two values.
+Algorithm 8 sends out a vote for the special
+final step to indicate that a user reached consensus on some
+value in the very first step. After Algorithm 8, \text{BA()} collects these votes
+to determine whether final consensus was achieved.
+\section{In Algorithm 8, why the algorithm needs a CommonCoin mechanism? }
+The attacker will make the consensus stuck all the time. If two large group A and B vote for different values, which means A votes empty\_hash and B votes for block\_hash, 
+the adversary can manipulate his votes to make some users vote for empty\_hash 
+and others vote for block\_hash. 
+The group A, B are continuously split up and keep stuck in voting.
+The attack requires the adversary need to know users' votes after \text{countvotes()}.
+So \text{CommonCoin} is invoked to solve the attack.
+
+\section{In Algorithm 8, why the algorithm terminates after MAXSTEPS? What would
+happen if the algorithm keeps trying without a MAXSTEP limit? What’s the
+security consequence here?}
+\section{Why Algorand uses a more complicated BFT algorithm that may not always reach
+final consensus? Why not Algorand runs the standard PBFT algorithm among
+selected committee members? (Hint: Read the last part of the introduction of the
+paper)}
+\end{document}
