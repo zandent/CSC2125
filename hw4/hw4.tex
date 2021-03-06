@@ -107,13 +107,35 @@ the adversary can manipulate his votes to make some users vote for empty\_hash
 and others vote for block\_hash. 
 The group A, B are continuously split up and keep stuck in voting.
 The attack requires the adversary need to know users' votes after \text{countvotes()}.
-So \text{CommonCoin} is invoked to solve the attack.
-
+So random common coin is used to solve the attack.
+The coin is a binary value which is the same for all users.
+As long as
+enough users see the same coin bit, and the bit was not
+known to the attacker after \text{countvotes()}.
+Then consensus is reached in the next iteration of the loop with
+probability 1/2.
+By iterating the steps, the probability of reaching consensus becomes 1.
 \section{In Algorithm 8, why the algorithm terminates after MAXSTEPS? What would
 happen if the algorithm keeps trying without a MAXSTEP limit? What’s the
 security consequence here?}
+First the probability BinaryBA() does not complete within
+MaxSteps = 150 steps even in the worst case is negligible.
+There is no need to run after MaxSteps. It is inefficient.
+Second, from the paper, an adversary is able to provide a certificate that appears to show
+that BA() completed after some large number of steps. 
+Large MaxSteps will allow the adversary enough time 
+to find a BA() step number
+in which the adversary controls more
+than a threshold of the selected committee members. \textbf{TODO}
 \section{Why Algorand uses a more complicated BFT algorithm that may not always reach
 final consensus? Why not Algorand runs the standard PBFT algorithm among
 selected committee members? (Hint: Read the last part of the introduction of the
 paper)}
+Standard PBFT will expose the identity of committee members.
+In Algorand, it is dangerous for members to be identified by adversaries.
+An adversary will target a committee member. So the complicated PBFT 
+only allows the member to speak only once. After sending his message,
+the member becomes completely irrelevant to the algorithm invocation.
+In this way, every user is capable of participating the algorithm 
+fairly equally.
 \end{document}
