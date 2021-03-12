@@ -1,0 +1,38 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{makecell}
+\usepackage[a4paper, total={6in, 9in}]{geometry}
+\usepackage{authblk}
+%% table
+\usepackage[flushleft]{threeparttable}
+\usepackage{multirow}
+\usepackage{makecell}
+
+\usepackage{graphicx}
+\graphicspath{{./figures/}}
+\usepackage{sectsty}
+\sectionfont{\fontsize{11}{15}\selectfont}
+\author{Zi Han Zhao}
+\affil{1001103708}
+\date{}
+\title{CSC2125 Homework 5}
+\begin{document}
+\maketitle
+\renewcommand{\thesubsection}{(\alph{subsection})}
+\section{What would happen if a powerful attacker identifies all participants of one shard
+in OmniLedger and launches DDoS attacks to take down the participants of the
+shard (make them offline)? Will this attack affect transactions in other shards?}
+
+\section{What would happen if the attacker is able to even bribe the participants to
+process invalid transactions? Will this attack affect transactions in other shards?}
+
+\section{Is Monoxide running 64 parallel Nakamoto consensus chains (without Chukonu
+mining) less secure than the original Bitcoin consensus? Why?}
+
+\section{Suppose a Monoxide node is using Chukonu mining on k shards. How many
+resources (e.g., storage, computation, etc.) the node would need comparing to a
+node without Chukonu mining? Is sharding really useful in this Chukonu mining
+case?}
+
+\end{document}
